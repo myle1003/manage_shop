@@ -6,10 +6,15 @@ const OAuth2 = google.auth.OAuth2;
 const jwt = require('jsonwebtoken');
 const JWT_KEY = "jwtactive987";
 const JWT_RESET_KEY = "jwtreset987";
+const ErrorHander = require("../utils/errorhander");
+const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const sendToken = require("../utils/jwtToken");
+
 
 
 //------------ Account Model ------------//
 const Account = require('../models/Account');
+const User = require('../models/User');
 
 //------------ Register Handle ------------//
 exports.registerHandle = (req, res) => {
@@ -166,6 +171,25 @@ exports.activateHandle = (req, res) => {
                             password,
                             id_role
                         });
+
+                        const fullname = "";
+                        const id_account = newAccount.id;
+                        const phone = "";
+                        const gender = true;
+                        const address = {
+                            id_commune: "",
+                            street: ""
+                        };
+
+
+                        const newUser = new User({
+                            fullname,
+                            id_account,
+                            address,
+                            phone,
+                            gender
+                        });
+                        newUser.save();
 
                         bcryptjs.genSalt(10, (err, salt) => {
                             bcryptjs.hash(newAccount.password, salt, (err, hash) => {
@@ -473,6 +497,9 @@ exports.login = (req, res) => {
 
                     if (bcryptjs.compareSync(req.body.password, data[0].password)) {
                         checkUserAndGenerateToken(data[0], req, res);
+                        // const account = Account.findOne({ email }).select("+password");
+                        // const account = Account.findOne({ email });
+                        // sendToken(account, 200, res);
                     } else {
 
                         res.status(400).json({
@@ -506,6 +533,31 @@ exports.login = (req, res) => {
     }
 }
 
+// Login User
+exports.loginUser = catchAsyncErrors(async(req, res, next) => {
+    const { email, password } = req.body;
+
+    // checking if user has given password and email both
+
+    if (!email || !password) {
+        return next(new ErrorHander("Please Enter Email & Password", 400));
+    }
+
+    const account = await Account.findOne({ email }).select("+password");
+    res.send(account);
+    if (!account) {
+        return next(new ErrorHander("Invalid email or password", 401));
+    }
+
+    // const isPasswordMatched = await account.comparePassword(password);
+
+    // if (!isPasswordMatched) {
+    //     return next(new ErrorHander("Invalid email or password", 401));
+    // }
+
+    sendToken(account, 200, res);
+});
+
 function checkUserAndGenerateToken(data, req, res) {
     jwt.sign({ Account: data.username, id: data._id }, 'shhhhh11111', { expiresIn: '1d' }, (err, token) => {
         if (err) {
@@ -519,6 +571,17 @@ function checkUserAndGenerateToken(data, req, res) {
                 token: token,
                 status: true
             });
+            // const options = {
+            //     expires: new Date(
+            //         Date.now + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+            //     ),
+            //     httpOnly: true,
+            // };
+
+            // res.status(200).cookie('token', token, options).json({
+            //     success: true,
+            //     token,
+            // })
         }
     });
 }
@@ -532,14 +595,4 @@ exports.logoutHandle = (req, res) => {
             status: true
         });
     })
-}
-
-// Get User Detail
-exports.getUserDetails = (req, res) => {
-    const account = Account.findById(req.account.id);
-
-    res.status(200).json({
-        success: true,
-        account
-    });
 }

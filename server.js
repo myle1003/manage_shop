@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+var cors = require('cors');
 
 const app = express();
 
@@ -21,6 +22,7 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
 
 //------------ EJS Configuration ------------//
 // app.use(expressLayouts);
+app.use(cors());
 app.use(express.json());
 app.use("/assets", express.static('./assets'));
 app.set('view engine', 'ejs');
@@ -53,7 +55,7 @@ app.use(function(req, res, next) {
 });
 //------------ Routes ------------//
 app.use('/', require('./routes/index'));
-app.use('/auth', require('./routes/auth'));
+// app.use('/auth', require('./routes/auth'));
 
 const PORT = process.env.PORT || 3006;
 

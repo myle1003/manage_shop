@@ -1,18 +1,29 @@
 const mongoose = require('mongoose');
+const Joi = require('joi');
+const Schema = mongoose.Schema;
+const Account = require('./Account');
+// const Account = require('../models/Account');
+Joi.objectId = require('joi-objectid')(Joi);
 
 //------------ User Schema ------------//
 const UserSchema = new mongoose.Schema({
     fullname: {
-        type: String,
-        required: true
+        type: String
     },
     id_account: {
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: Account
+    },
+    address: {
+        id_commune: {
+            type: String,
+        },
+        street: {
+            type: String,
+        }
     },
     phone: {
         type: String,
-        required: true
     },
     gender: {
         type: Boolean,

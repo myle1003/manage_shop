@@ -7,6 +7,7 @@ exports.createUser = (req, res) => {
     const id_account = (req.body.id_account);
     const phone = (req.body.phone);
     const gender = (req.body.gender);
+    const address = (req.body.address);
 
     User.findOne({ phone: phone }).then(user => {
         if (user) {
@@ -18,6 +19,7 @@ exports.createUser = (req, res) => {
             const newUser = new User({
                 fullname,
                 id_account,
+                address,
                 phone,
                 gender
             });
@@ -36,9 +38,15 @@ exports.updateUser = async(req, res) => {
     const fullname = (req.body.fullname);
     const phone = (req.body.phone);
     const gender = (req.body.gender);
+    const address = (req.body.address);
 
-    var user = await User.findByIdAndUpdate(req.params.id, { fullname: fullname, phone: phone, gender: gender });
-    user = await User.findById(req.params.id);
+    const id_account = req.account;
+    var user = await User.findOne({ id_account: id_account });
+    var id = user.id;
+
+    var user = await User.findByIdAndUpdate(id, { fullname: fullname, phone: phone, gender: gender, address: address, id_account });
+    user = await User.findOne({ id_account: id_account });
+
     if (!user) {
         res.status(404).json({
             message: 'Not availble',
@@ -55,7 +63,8 @@ exports.updateUser = async(req, res) => {
 //------------ get user ------------//
 exports.getUser = async(req, res) => {
 
-    var user = await User.findById(req.params.id);
+    const id_account = req.account;
+    var user = await User.findOne({ id_account: id_account });
     if (!user) {
         res.status(404).json({
             message: 'Not availble',
