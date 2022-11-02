@@ -1,6 +1,6 @@
 const SlugF = require('../config/slug')
 
-const { Discount, DiscSchema, validateDisc } = require('../Models/discount')
+const { Discount, DiscSchema, validateDisc } = require('../models/Discount')
 
 
 
