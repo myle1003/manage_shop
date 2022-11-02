@@ -504,7 +504,6 @@ exports.login = (req, res) => {
 
                         res.status(400).json({
                             message: 'Email or password is incorrect!',
-                            token: "",
                             status: false
                         });
                     }

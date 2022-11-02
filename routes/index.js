@@ -33,7 +33,6 @@ router.use("/", (req, res, next) => {
                 } else {
                     return res.status(401).json({
                         message: 'User unauthorized!',
-                        user: null,
                         status: false
                     });
                 }
