@@ -19,7 +19,7 @@ var jwt = require('jsonwebtoken');
 
 router.use("/", (req, res, next) => {
     try {
-        if (req.path == "/auth/login" || req.path == "/auth/register" || req.path == "/auth/forgot" || req.path == "/auth/reset" || req.path == "/") {
+        if (req.path == "/auth/login" || req.path == "/auth/register" || req.path == "/auth/forgot" || req.path == "/auth/reset" || req.path == "/auth") {
             next();
         } else {
             /* decode jwt token if authorized*/
