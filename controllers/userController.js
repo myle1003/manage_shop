@@ -80,7 +80,7 @@ exports.updateUser = async(req, res) => {
     }
     var users = {
         _id: user._id,
-        id_account: user.id_account,
+        id_account: id_account,
         fullname: user.fullname,
         email: user.email,
         phone: user.phone,
@@ -127,7 +127,7 @@ exports.getUser = async(req, res) => {
     }
     var users = {
         _id: user._id,
-        id_account: user.id_account,
+        id_account: id_account,
         fullname: user.fullname,
         email: user.email,
         phone: user.phone,

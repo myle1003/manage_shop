@@ -19,11 +19,11 @@ var jwt = require('jsonwebtoken');
 
 router.use("/", (req, res, next) => {
     try {
-        // if (req.path == "/auth/login" || req.path == "/auth/register" || req.path == "/auth/forgot" || req.path == "/auth/reset" || req.path == "/auth") {
-        if (req.path == "/api/v1/cms/") {
+        if (req.path == "/api/v1/auth/login" || req.path == "/api/v1/auth/register" || req.path == "/api/v1/auth/forgot" || req.path == "/api/v1/auth/reset" || req.path == "/api/v1/auth/activate/" || req.path == "/api/v1/auth/") {
+            next();
+        } else {
             /* decode jwt token if authorized*/
             jwt.verify(req.headers.token, 'shhhhh11111', function(err, decoded) {
-                // res.send(decoded.id);
 
                 if (decoded && decoded.id) {
                     req.account = decoded.id;
@@ -36,8 +36,6 @@ router.use("/", (req, res, next) => {
                     });
                 }
             })
-        } else {
-            next();
         }
 
     } catch (e) {
