@@ -19,9 +19,8 @@ var jwt = require('jsonwebtoken');
 
 router.use("/", (req, res, next) => {
     try {
-        if (req.path == "/auth/login" || req.path == "/auth/register" || req.path == "/auth/forgot" || req.path == "/auth/reset" || req.path == "/auth") {
-            next();
-        } else {
+        // if (req.path == "/auth/login" || req.path == "/auth/register" || req.path == "/auth/forgot" || req.path == "/auth/reset" || req.path == "/auth") {
+        if (req.path == "/api/v1/cms/") {
             /* decode jwt token if authorized*/
             jwt.verify(req.headers.token, 'shhhhh11111', function(err, decoded) {
                 // res.send(decoded.id);
@@ -37,6 +36,8 @@ router.use("/", (req, res, next) => {
                     });
                 }
             })
+        } else {
+            next();
         }
 
     } catch (e) {
@@ -47,15 +48,15 @@ router.use("/", (req, res, next) => {
     }
 })
 
-router.use('/auth', auth);
+router.use('/api/v1/auth', auth);
 
-router.use('/user', user);
-router.use('/categories', categories);
-router.use('/product', product);
-router.use('/discounts', discounts);
-router.use('/provinces', provinces);
-router.use('/districts', districts);
-router.use('/communes', communes);
+router.use('/api/v1/cms/user', user);
+router.use('/api/v1/cms/categories', categories);
+router.use('/api/v1/cms/product', product);
+router.use('/api/v1/cms/discounts', discounts);
+router.use('/api/v1/cms/provinces', provinces);
+router.use('/api/v1/cms/districts', districts);
+router.use('/api/v1/cms/communes', communes);
 
 
 

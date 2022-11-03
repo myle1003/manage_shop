@@ -82,7 +82,7 @@ exports.registerHandle = (req, res) => {
 
                 const output = `
                 <h2>Please click on below link to activate your account</h2>
-                <p>${CLIENT_URL}/auth/activate/${token}</p>
+                <p>${CLIENT_URL}/api/v1/auth/activate/${token}</p>
                 <p><b>NOTE: </b> The above activation link expires in 30 minutes.</p>
                 `;
 

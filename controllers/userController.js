@@ -1,5 +1,9 @@
 //------------ Account Model ------------//
 const User = require('../models/User');
+const { District, DistrictSchema, validateDistrict } = require('../models/District')
+const { Commune, CommuneSchema, validateCommune } = require('../models/Commune');
+const { use } = require('passport');
+
 
 //------------ Create ------------//
 exports.createUser = (req, res) => {
@@ -71,9 +75,32 @@ exports.getUser = async(req, res) => {
             status: false
         });
     }
+    var id_commune = user.address.id_commune;
+
+
+    var district = await Commune.findById(id_commune);
+    var id_district = district.id_district;
+    var province = await District.findById(id_district);
+    address = {
+        id_province: province.id_province,
+        id_district: id_district,
+        id_commune: id_commune,
+        street: user.address.street
+    }
+    var users = {
+        _id: user._id,
+        id_account: user.id_account,
+        fullname: user.fullname,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        address: address
+    }
+
+    // res.send(address);
     res.status(200).json({
         message: 'success',
-        user: user,
+        user: users,
         status: true
     });
 }
