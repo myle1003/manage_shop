@@ -76,16 +76,23 @@ exports.getUser = async(req, res) => {
         });
     }
     var id_commune = user.address.id_commune;
-
-
-    var district = await Commune.findById(id_commune);
-    var id_district = district.id_district;
-    var province = await District.findById(id_district);
-    address = {
-        id_province: province.id_province,
-        id_district: id_district,
-        id_commune: id_commune,
-        street: user.address.street
+    if (id_commune) {
+        var district = await Commune.findById(id_commune);
+        var id_district = district.id_district;
+        var province = await District.findById(id_district);
+        address = {
+            id_province: province.id_province,
+            id_district: id_district,
+            id_commune: id_commune,
+            street: user.address.street
+        }
+    } else {
+        address = {
+            id_province: "",
+            id_district: "",
+            id_commune: "",
+            street: ""
+        }
     }
     var users = {
         _id: user._id,
