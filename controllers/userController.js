@@ -42,13 +42,14 @@ exports.updateUser = async(req, res) => {
     const fullname = (req.body.fullname);
     const phone = (req.body.phone);
     const gender = (req.body.gender);
-    const address = (req.body.address);
+    var address = (req.body.address);
 
     const id_account = req.account;
     var user = await User.findOne({ id_account: id_account });
     var id = user.id;
 
     var user = await User.findByIdAndUpdate(id, { fullname: fullname, phone: phone, gender: gender, address: address, id_account });
+
     user = await User.findOne({ id_account: id_account });
 
     if (!user) {
@@ -57,9 +58,39 @@ exports.updateUser = async(req, res) => {
             status: false
         });
     }
+
+    var id_commune = user.address.id_commune;
+    if (id_commune) {
+        var district = await Commune.findById(id_commune);
+        var id_district = district.id_district;
+        var province = await District.findById(id_district);
+        address = {
+            id_province: province.id_province,
+            id_district: id_district,
+            id_commune: id_commune,
+            street: user.address.street
+        }
+    } else {
+        address = {
+            id_province: "",
+            id_district: "",
+            id_commune: "",
+            street: ""
+        }
+    }
+    var users = {
+        _id: user._id,
+        id_account: user.id_account,
+        fullname: user.fullname,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        address: address
+    }
+
     res.status(200).json({
         message: 'success',
-        user: user,
+        user: users,
         status: true
     });
 }
