@@ -108,10 +108,6 @@ exports.registerHandle = (req, res) => {
                         });
                     } else {
                         console.log('Mail sent : %s', info.response);
-                        req.flash(
-                            'success_msg',
-                            'Activation link sent to email ID. Please activate to log in.'
-                        );
                         res.status(200).json({
                             message: 'Activation link sent to email ID. Please activate to log in.',
                             status: true
@@ -131,10 +127,7 @@ exports.activateHandle = (req, res) => {
     if (token) {
         jwt.verify(token, JWT_KEY, (err, decodedToken) => {
             if (err) {
-                req.flash(
-                    'error_msg',
-                    'Incorrect or expired link! Please register again.'
-                );
+
                 res.send('Incorrect or expired link! Please register again.');
             } else {
 
@@ -142,11 +135,7 @@ exports.activateHandle = (req, res) => {
                 const { name, email, password } = decodedToken;
                 Account.findOne({ email: email }).then(account => {
                     if (account) {
-                        //------------ User already exists ------------//
-                        req.flash(
-                            'error_msg',
-                            'Email ID already registered! Please log in.'
-                        );
+
                         res.send('Email ID already registered! Please log in.');
                     } else {
                         const newAccount = new Account({
@@ -182,10 +171,6 @@ exports.activateHandle = (req, res) => {
                                 newAccount
                                     .save()
                                     .then(account => {
-                                        req.flash(
-                                            'success_msg',
-                                            'Account activated. You can now log in.'
-                                        );
                                         re.send('Account activated. You can now log in.');
                                     })
                                     .catch(err => console.log(err));
@@ -253,10 +238,6 @@ exports.forgotPassword = (req, res) => {
                         Account.findByIdAndUpdate({ _id: account._id }, { password },
                             function(err, result) {
                                 if (err) {
-                                    req.flash(
-                                        'error_msg',
-                                        'Error resetting password!'
-                                    );
                                     res.status(400).json({
                                         message: 'Error resetting password!',
                                         status: false
@@ -298,10 +279,6 @@ exports.forgotPassword = (req, res) => {
                         transporter.sendMail(mailOptions, (error, info) => {
                             if (error) {
                                 console.log(error);
-                                req.flash(
-                                    'error_msg',
-                                    'Something went wrong on our end. Please try again later.'
-                                );
                                 res.status(400).json({
                                     message: 'Something went wrong on our end. Please try again later.',
                                     status: false
@@ -309,10 +286,6 @@ exports.forgotPassword = (req, res) => {
                                 // res.redirect('/auth/forgot');
                             } else {
                                 console.log('Mail sent : %s', info.response);
-                                req.flash(
-                                    'success_msg',
-                                    'Password reset link sent to email ID. Please follow the instructions.'
-                                );
                                 res.status(200).json({
                                     message: 'Password reset link sent to email ID. Please follow the instructions.',
                                     status: true
@@ -334,11 +307,6 @@ exports.resetPassword = (req, res) => {
 
     //------------ Checking required fields ------------//
     if (!password || !password2) {
-        req.flash(
-            'error_msg',
-            'Please enter all fields.'
-        );
-        // res.redirect(`/auth/reset/${id}`);
         res.status(400).json({
             message: 'Please enter all fields.',
             status: false
@@ -347,11 +315,6 @@ exports.resetPassword = (req, res) => {
 
     //------------ Checking password length ------------//
     else if (password.length < 8) {
-        req.flash(
-            'error_msg',
-            'Password must be at least 8 characters.'
-        );
-        // res.redirect(`/auth/reset/${id}`);
         res.status(400).json({
             message: 'Password must be at least 8 characters.',
             status: false
@@ -360,11 +323,6 @@ exports.resetPassword = (req, res) => {
 
     //------------ Checking password mismatch ------------//
     else if (password != password2) {
-        req.flash(
-            'error_msg',
-            'Passwords do not match.'
-        );
-        // res.redirect(`/auth/reset/${id}`);
         res.status(400).json({
             message: 'Passwords do not match.',
             status: false
@@ -378,21 +336,11 @@ exports.resetPassword = (req, res) => {
                 Account.findByIdAndUpdate({ _id: id }, { password },
                     function(err, result) {
                         if (err) {
-                            req.flash(
-                                'error_msg',
-                                'Error resetting password!'
-                            );
-                            // res.redirect(`/auth/reset/${id}`);
                             res.status(400).json({
                                 message: 'Error resetting password!',
                                 status: false
                             });
                         } else {
-                            req.flash(
-                                'success_msg',
-                                'Password reset successfully!'
-                            );
-                            // res.redirect('/auth/login');
                             res.status(200).json({
                                 message: 'Password reset successfully!',
                                 status: true
