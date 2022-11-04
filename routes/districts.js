@@ -3,7 +3,6 @@ const router = express.Router();
 
 //------------ Importing Controllers ------------//
 const districtController = require('../controllers/districtController');
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
 
 //------------ create ------------//

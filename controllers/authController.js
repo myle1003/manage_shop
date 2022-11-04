@@ -1,4 +1,3 @@
-const passport = require('passport');
 const bcryptjs = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const { google } = require("googleapis");
@@ -6,9 +5,9 @@ const OAuth2 = google.auth.OAuth2;
 const jwt = require('jsonwebtoken');
 const JWT_KEY = "jwtactive987";
 const JWT_RESET_KEY = "jwtreset987";
-const ErrorHander = require("../utils/errorhander");
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const sendToken = require("../utils/jwtToken");
+// const ErrorHander = require("../utils/errorhander");
+// const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+// const sendToken = require("../utils/jwtToken");
 
 
 
@@ -532,30 +531,7 @@ exports.login = (req, res) => {
     }
 }
 
-// Login User
-exports.loginUser = catchAsyncErrors(async(req, res, next) => {
-    const { email, password } = req.body;
 
-    // checking if user has given password and email both
-
-    if (!email || !password) {
-        return next(new ErrorHander("Please Enter Email & Password", 400));
-    }
-
-    const account = await Account.findOne({ email }).select("+password");
-    res.send(account);
-    if (!account) {
-        return next(new ErrorHander("Invalid email or password", 401));
-    }
-
-    // const isPasswordMatched = await account.comparePassword(password);
-
-    // if (!isPasswordMatched) {
-    //     return next(new ErrorHander("Invalid email or password", 401));
-    // }
-
-    sendToken(account, 200, res);
-});
 
 function checkUserAndGenerateToken(data, req, res) {
     jwt.sign({ Account: data.username, id: data._id }, 'shhhhh11111', { expiresIn: '1d' }, (err, token) => {
@@ -570,17 +546,7 @@ function checkUserAndGenerateToken(data, req, res) {
                 token: token,
                 status: true
             });
-            // const options = {
-            //     expires: new Date(
-            //         Date.now + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-            //     ),
-            //     httpOnly: true,
-            // };
 
-            // res.status(200).cookie('token', token, options).json({
-            //     success: true,
-            //     token,
-            // })
         }
     });
 }

@@ -1,15 +1,15 @@
 const express = require('express');
-const expressLayouts = require('express-ejs-layouts');
+// const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
-const passport = require('passport');
+// const passport = require('passport');
 var cors = require('cors');
 
 const app = express();
 
 //------------ Passport Configuration ------------//
-require('./config/passport')(passport);
+// require('./config/passport')(passport);
 
 //------------ DB Configuration ------------//
 const db = require('./config/key').MongoURI;
@@ -40,8 +40,8 @@ app.use(
 );
 
 //------------ Passport Middlewares ------------//
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 //------------ Connecting flash ------------//
 app.use(flash());
