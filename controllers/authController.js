@@ -3,9 +3,10 @@ const nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 const jwt = require('jsonwebtoken');
-const JWT_KEY = "jwtactive987";
-const JWT_RESET_KEY = "jwtreset987";
-
+require('dotenv').config();
+const JWT_KEY = process.env.JWT_KEY
+const JWT_RESET_KEY = process.env.JWT_RESET_KEY
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 
 //------------ Account Model ------------//
@@ -401,7 +402,7 @@ exports.login = (req, res) => {
 }
 
 function checkUserAndGenerateToken(data, req, res) {
-    jwt.sign({ Account: data.username, id: data._id }, 'shhhhh11111', { expiresIn: '1d' }, (err, token) => {
+    jwt.sign({ Account: data.username, id: data._id }, PRIVATE_KEY, { expiresIn: '1d' }, (err, token) => {
         if (err) {
             res.status(400).json({
                 status: false,

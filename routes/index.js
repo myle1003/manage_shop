@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+require('dotenv').config()
 const auth = require('./auth');
 const user = require('./user');
 const categories = require('./categories');
@@ -18,7 +18,7 @@ router.use("/", (req, res, next) => {
             next();
         } else {
             /* decode jwt token if authorized*/
-            jwt.verify(req.headers.token, 'shhhhh11111', function(err, decoded) {
+            jwt.verify(req.headers.token, process.env.PRIVATE_KEY, function(err, decoded) {
 
                 if (decoded && decoded.id) {
                     req.account = decoded.id;
