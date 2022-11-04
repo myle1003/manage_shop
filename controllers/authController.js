@@ -5,9 +5,6 @@ const OAuth2 = google.auth.OAuth2;
 const jwt = require('jsonwebtoken');
 const JWT_KEY = "jwtactive987";
 const JWT_RESET_KEY = "jwtreset987";
-// const ErrorHander = require("../utils/errorhander");
-// const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-// const sendToken = require("../utils/jwtToken");
 
 
 
@@ -23,8 +20,6 @@ exports.registerHandle = (req, res) => {
     const password2 = (req.body.password2);
     const id_role = 2;
 
-    // const { name, email, password, password2 } = req.body;
-    let errors = [];
 
     //------------ Checking required fields ------------//
     if (!name || !email || !password || !password2) {
@@ -56,8 +51,6 @@ exports.registerHandle = (req, res) => {
         });
     } else {
         //------------ Validation passed ------------//
-        // const user1 = User.findOne({ email: email });
-        // res.send(user1);
         Account.findOne({ email: email }).then(account => {
             if (account) {
                 res.status(400).json({
@@ -108,12 +101,7 @@ exports.registerHandle = (req, res) => {
 
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
-                        // console.log(error);
-                        // req.flash(
-                        //     'error_msg',
-                        //     'Something went wrong on our end. Please register again.'
-                        // );
-                        // res.redirect('/auth/login');
+
                         res.status(400).json({
                             message: 'Something went wrong on our end. Please register again.',
                             status: false
@@ -124,7 +112,6 @@ exports.registerHandle = (req, res) => {
                             'success_msg',
                             'Activation link sent to email ID. Please activate to log in.'
                         );
-                        // res.redirect('/auth/login');
                         res.status(200).json({
                             message: 'Activation link sent to email ID. Please activate to log in.',
                             status: true
@@ -148,7 +135,6 @@ exports.activateHandle = (req, res) => {
                     'error_msg',
                     'Incorrect or expired link! Please register again.'
                 );
-                // res.redirect('/auth/register');
                 res.send('Incorrect or expired link! Please register again.');
             } else {
 
@@ -161,7 +147,6 @@ exports.activateHandle = (req, res) => {
                             'error_msg',
                             'Email ID already registered! Please log in.'
                         );
-                        // res.redirect('/auth/login');
                         res.send('Email ID already registered! Please log in.');
                     } else {
                         const newAccount = new Account({
@@ -201,7 +186,6 @@ exports.activateHandle = (req, res) => {
                                             'success_msg',
                                             'Account activated. You can now log in.'
                                         );
-                                        // res.redirect('/auth/login');
                                         re.send('Account activated. You can now log in.');
                                     })
                                     .catch(err => console.log(err));
@@ -225,32 +209,22 @@ exports.forgotPassword = (req, res) => {
 
     //------------ Checking required fields ------------//
     if (!email) {
-        // errors.push({ msg: 'Please enter an email ID' });
         res.status(400).json({
             message: 'Please enter an email ID!',
             status: false
         });
     }
 
-    // if (errors.length > 0) {
-    //     res.render('forgot', {
-    //         errors,
-    //         email
-    //     });
-    // } 
+
     if (false) {} else {
         Account.findOne({ email: email }).then(account => {
             if (!account) {
                 //------------ User already exists ------------//
-                // errors.push({ msg: 'User with Email ID does not exist!' });
                 res.status(400).json({
                     message: 'Account with Email ID does not exist!',
                     status: false
                 });
-                // res.render('forgot', {
-                //     errors,
-                //     email
-                // });
+
             } else {
 
                 const oauth2Client = new OAuth2(
@@ -283,7 +257,6 @@ exports.forgotPassword = (req, res) => {
                                         'error_msg',
                                         'Error resetting password!'
                                     );
-                                    // res.redirect(`/auth/reset/${id}`);
                                     res.status(400).json({
                                         message: 'Error resetting password!',
                                         status: false
@@ -297,11 +270,6 @@ exports.forgotPassword = (req, res) => {
 
                 Account.updateOne({ resetLink: token }, (err, success) => {
                     if (err) {
-                        // errors.push({ msg: 'Error resetting password!' });
-                        // res.render('forgot', {
-                        //     errors,
-                        //     email
-                        // });
                         res.status(400).json({
                             message: 'Error resetting password!',
                             status: false
@@ -345,7 +313,6 @@ exports.forgotPassword = (req, res) => {
                                     'success_msg',
                                     'Password reset link sent to email ID. Please follow the instructions.'
                                 );
-                                // res.redirect('/auth/login');
                                 res.status(200).json({
                                     message: 'Password reset link sent to email ID. Please follow the instructions.',
                                     status: true
@@ -359,52 +326,6 @@ exports.forgotPassword = (req, res) => {
         });
     }
 }
-
-//------------ Redirect to Reset Handle ------------//
-exports.gotoReset = (req, res) => {
-    const { token } = req.params;
-
-    if (token) {
-        jwt.verify(token, JWT_RESET_KEY, (err, decodedToken) => {
-            if (err) {
-                req.flash(
-                    'error_msg',
-                    'Incorrect or expired link! Please try again.'
-                );
-                // res.redirect('/auth/login');
-                res.status(200).json({
-                    message: 'Incorrect or expired link! Please try again.',
-                    status: false
-                });
-            } else {
-                const { _id } = decodedToken;
-                Account.findById(_id, (err, account) => {
-                    if (err) {
-                        req.flash(
-                            'error_msg',
-                            'Account with email ID does not exist! Please try again.'
-                        );
-                        // res.redirect('/auth/login');
-                        res.status(400).json({
-                            message: 'Account with email ID does not exist! Please try again.',
-                            status: false
-                        });
-                    } else {
-                        // res.redirect(`/auth/reset/${_id}`)
-                        res.status(200).json({
-                            message: 'Succes',
-                            id: _id,
-                            status: true
-                        });
-                    }
-                })
-            }
-        })
-    } else {
-        console.log("Password reset error!")
-    }
-}
-
 
 exports.resetPassword = (req, res) => {
     var { password, password2 } = req.body;
@@ -531,8 +452,6 @@ exports.login = (req, res) => {
     }
 }
 
-
-
 function checkUserAndGenerateToken(data, req, res) {
     jwt.sign({ Account: data.username, id: data._id }, 'shhhhh11111', { expiresIn: '1d' }, (err, token) => {
         if (err) {
@@ -554,7 +473,6 @@ function checkUserAndGenerateToken(data, req, res) {
 //------------ Logout Handle ------------//
 exports.logoutHandle = (req, res) => {
     req.session.destroy((err) => {
-        // res.redirect('/auth/login') // will always fire after session is destroyed
         res.json({
             message: 'Logout Successfully.',
             status: true

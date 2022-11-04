@@ -1,11 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { ensureAuthenticated } = require('../config/checkAuth')
 
-//------------ Welcome Route ------------//
-router.get('/', (req, res) => {
-    res.render('welcome');
-});
 const auth = require('./auth');
 const user = require('./user');
 const categories = require('./categories');
@@ -55,12 +50,5 @@ router.use('/api/v1/cms/discounts', discounts);
 router.use('/api/v1/cms/provinces', provinces);
 router.use('/api/v1/cms/districts', districts);
 router.use('/api/v1/cms/communes', communes);
-
-
-
-//------------ Dashboard Route ------------//
-router.get('/dashboard', ensureAuthenticated, (req, res) => res.render('dash', {
-    name: req.user.name
-}));
 
 module.exports = router;
